@@ -12,3 +12,12 @@ We replace Azure Storage with AWS S3. Brief outline of what's needed:
 * Follow answers to the question [Streaming file from S3 with Express including information on length and filetype](https://stackoverflow.com/questions/35782434/streaming-file-from-s3-with-express-including-information-on-length-and-filetype) on S.O.
 
 For now, let's just stick to v2.
+
+[EDIT] after getting streaming from S3 to work, here's what's left to do:
+
+* Use env vars OR the `~/.aws/config` file (the latter being the default, but less suited for deployment)
+* Remove default value for PORT, exit on missing vars
+* Have streaming service get video from S3 instead of fs
+* (re)publish Docker image for streaming, initial publish for storage
+* Add Compose file
+* Add MongoDB
