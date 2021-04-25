@@ -17,7 +17,7 @@ For now, let's just stick to v2.
 
 * [x] Use env vars ~~OR the `~/.aws/config` file (the latter being the default, but less suited for deployment)~~
 * [x] Remove default value for PORT, exit on missing vars
-* [ ] Have streaming service get video from storage service instead of fs
+* [x] Have streaming service get video from storage service instead of fs
 * [ ] (re)publish Docker image for streaming, initial publish for storage
-* [ ] Add Compose file
+* [x] Add Compose file
 * [ ] Add MongoDB
