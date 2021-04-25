@@ -2,7 +2,13 @@ version: '3'
 
 services:
 
+  db:
+    image: mongo:latest
+    container_name: video-db
+
   streaming:
+    depends_on:
+      - db
     image: video-streaming
     build:
       context: ./express-streaming-ms

@@ -4,6 +4,8 @@ const requiredVars = [
   'PORT',
   'VIDEO_STORAGE_HOST',
   'VIDEO_STORAGE_PORT',
+  'MONGO_HOST',
+  'MONGO_DB_NAME',
 ];
 
 const config = {};

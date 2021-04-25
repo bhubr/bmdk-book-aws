@@ -20,4 +20,4 @@ For now, let's just stick to v2.
 * [x] Have streaming service get video from storage service instead of fs
 * [ ] (re)publish Docker image for streaming, initial publish for storage
 * [x] Add Compose file
-* [ ] Add MongoDB
+* [x] Add MongoDB

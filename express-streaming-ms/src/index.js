@@ -1,30 +1,46 @@
 const express = require('express');
 const http = require('http');
 const morgan = require('morgan');
+const { ObjectID } = require('mongodb');
 const {
   PORT: port,
   VIDEO_STORAGE_HOST: storageHost,
   VIDEO_STORAGE_PORT: storagePort,
 } = require('./config');
+const { getVideo } = require('./mongo');
 
 const app = express();
 app.use(morgan('tiny'));
 
-app.get('/video', (req, res) => {
-  const forwardReq = http.request(
-    {
-      host: storageHost,
-      port: storagePort,
-      path: '/video?path=SampleVideo_720x480_1mb.mp4',
-      method: 'GET',
-      headers: req.headers,
-    }, (forwardRes) => {
-      res.writeHeader(forwardRes.statusCode, forwardRes.headers);
-      forwardRes.pipe(res);
-    },
-  );
+app.get('/videos/:id', async (req, res) => {
+  try {
+    const videoId = ObjectID(req.params.id);
+    const video = await getVideo(videoId);
+    if (!video) {
+      return res.status(404).json({
+        error: `No video with id ${videoId}`,
+      });
+    }
+    console.log(video);
+    const forwardReq = http.request(
+      {
+        host: storageHost,
+        port: storagePort,
+        path: `/video?path=${video.path}`,
+        method: 'GET',
+        headers: req.headers,
+      },
+      (forwardRes) => {
+        res.writeHeader(forwardRes.statusCode, forwardRes.headers);
+        forwardRes.pipe(res);
+      },
+    );
 
-  req.pipe(forwardReq);
+    return req.pipe(forwardReq);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
 });
 
 app.listen(port, () => {
