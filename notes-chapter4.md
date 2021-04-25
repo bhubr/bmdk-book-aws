@@ -15,9 +15,9 @@ For now, let's just stick to v2.
 
 [EDIT] after getting streaming from S3 to work, here's what's left to do:
 
-* Use env vars OR the `~/.aws/config` file (the latter being the default, but less suited for deployment)
-* Remove default value for PORT, exit on missing vars
-* Have streaming service get video from S3 instead of fs
-* (re)publish Docker image for streaming, initial publish for storage
-* Add Compose file
-* Add MongoDB
+* [x] Use env vars ~~OR the `~/.aws/config` file (the latter being the default, but less suited for deployment)~~
+* [x] Remove default value for PORT, exit on missing vars
+* [ ] Have streaming service get video from storage service instead of fs
+* [ ] (re)publish Docker image for streaming, initial publish for storage
+* [ ] Add Compose file
+* [ ] Add MongoDB

@@ -2,9 +2,8 @@ require('dotenv').config();
 
 const requiredVars = [
   'PORT',
-  'AWS_REGION',
-  'AWS_ACCESS_KEY_ID',
-  'AWS_ACCESS_KEY_SECRET',
+  'VIDEO_STORAGE_HOST',
+  'VIDEO_STORAGE_PORT',
 ];
 
 const config = {};

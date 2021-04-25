@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  streaming:
+    image: video-streaming
+    build:
+      context: ./express-streaming-ms
+    container_name: video-streaming
+    ports:
+      - "4000:80"
+    environment:
+      PORT: 80
+    env_file: ./express-streaming-ms/.env
+
+  storage:
+    image: video-storage
+    build:
+      context: ./s3-storage
+    container_name: video-storage
+    ports:
+      - "4001:80"
+    environment:
+      PORT: 80
+    env_file: ./s3-storage/.env

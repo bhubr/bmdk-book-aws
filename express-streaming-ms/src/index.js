@@ -1,25 +1,30 @@
 const express = require('express');
-const fs = require('fs');
-const { join } = require('path');
-const { promisify } = require('util');
+const http = require('http');
+const morgan = require('morgan');
+const {
+  PORT: port,
+  VIDEO_STORAGE_HOST: storageHost,
+  VIDEO_STORAGE_PORT: storagePort,
+} = require('./config');
 
 const app = express();
-const port = process.env.PORT || 5000;
-const statAsync = promisify(fs.stat);
+app.use(morgan('tiny'));
 
-app.get('/video', async (req, res) => {
-  try {
-    const videoPath = join(__dirname, '../videos/SampleVideo_720x480_1mb.mp4');
-    const stats = await statAsync(videoPath);
-    res.writeHead(200, {
-      'Content-Type': 'video/mp4',
-      'Content-Length': stats.size,
-    });
-    return fs.createReadStream(videoPath).pipe(res);
-  } catch (err) {
-    console.error('Could not stat video file', err);
-    return res.sendStatus(500);
-  }
+app.get('/video', (req, res) => {
+  const forwardReq = http.request(
+    {
+      host: storageHost,
+      port: storagePort,
+      path: '/video?path=SampleVideo_720x480_1mb.mp4',
+      method: 'GET',
+      headers: req.headers,
+    }, (forwardRes) => {
+      res.writeHeader(forwardRes.statusCode, forwardRes.headers);
+      forwardRes.pipe(res);
+    },
+  );
+
+  req.pipe(forwardReq);
 });
 
 app.listen(port, () => {
