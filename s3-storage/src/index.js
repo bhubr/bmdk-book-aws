@@ -1,25 +1,37 @@
 const express = require('express');
 const AWS = require('aws-sdk');
+const {
+  PORT: port,
+  AWS_REGION: region,
+  AWS_ACCESS_KEY_ID: accessKeyId,
+  AWS_ACCESS_KEY_SECRET: secretAccessKey,
+} = require('./config');
 
 const app = express();
-const port = process.env.PORT || 5000;
-const region = process.env.AWS_REGION || 'eu-west-3';
 
-AWS.config.update({ region });
+AWS.config.update({
+  credentials: {
+    accessKeyId,
+    secretAccessKey,
+  },
+  region,
+});
 
 const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
-const videoParams = { Bucket: 'bmdk-videos', Key: 'SampleVideo_720x480_1mb.mp4' };
+const videoParams = {
+  Bucket: 'bmdk-videos',
+  Key: 'SampleVideo_720x480_1mb.mp4',
+};
 
-app.get('/video', async (req, res, next) => {
+app.get('/video', (req, res, next) => {
   s3.getObject(videoParams)
-    .on('httpHeaders', function (statusCode, headers) {
+    .on('httpHeaders', function onReceiveHeaders(statusCode, headers) {
       if (statusCode >= 400) {
         return;
       }
       res.set('Content-Length', headers['content-length']);
       res.set('Content-Type', headers['content-type']);
-      this.response.httpResponse.createUnbufferedStream()
-        .pipe(res);
+      this.response.httpResponse.createUnbufferedStream().pipe(res);
     })
     .on('error', next)
     .send();
