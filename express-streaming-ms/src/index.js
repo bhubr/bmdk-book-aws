@@ -14,14 +14,14 @@ app.use(morgan('tiny'));
 
 app.get('/videos/:id', async (req, res) => {
   try {
-    const videoId = ObjectID(req.params.id);
+    const videoId = req.params.id;
     const video = await getVideo(videoId);
-    if (!video) {
+    console.log('GOT VIDEO', videoId, video);
+    if (video === null || Object.keys(video).length === 0) {
       return res.status(404).json({
         error: `No video with id ${videoId}`,
       });
     }
-    console.log(video);
     const forwardReq = http.request(
       {
         host: storageHost,

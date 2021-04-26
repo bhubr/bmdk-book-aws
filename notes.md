@@ -1,4 +1,6 @@
-# Notes on chapter 4
+# Noted
+
+## Chapter 4
 
 We replace Azure Storage with AWS S3. Brief outline of what's needed:
 
@@ -18,6 +20,10 @@ For now, let's just stick to v2.
 * [x] Use env vars ~~OR the `~/.aws/config` file (the latter being the default, but less suited for deployment)~~
 * [x] Remove default value for PORT, exit on missing vars
 * [x] Have streaming service get video from storage service instead of fs
-* [ ] (re)publish Docker image for streaming, initial publish for storage
+* [ ] (re)publish Docker image for streaming, initial publish for storage -> postponed for ch. 6
 * [x] Add Compose file
 * [x] Add MongoDB
+
+## Chapter 5
+
+* [ ] Distinct Dockerfiles & Compose files for dev & prod

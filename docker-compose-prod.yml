@@ -12,6 +12,7 @@ services:
     image: video-streaming
     build:
       context: ./express-streaming-ms
+      dockerfile: Dockerfile-prod
     container_name: video-streaming
     ports:
       - "4000:80"
