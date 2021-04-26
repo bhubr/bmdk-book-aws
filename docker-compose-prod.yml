@@ -11,14 +11,14 @@ services:
       - db
     image: video-streaming
     build:
-      context: ./express-streaming-ms
+      context: ./streaming
       dockerfile: Dockerfile-prod
     container_name: video-streaming
     ports:
       - "4000:80"
     environment:
       PORT: 80
-    env_file: ./express-streaming-ms/.env
+    env_file: ./streaming/.env
 
   storage:
     image: video-storage
