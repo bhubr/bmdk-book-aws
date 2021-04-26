@@ -7,6 +7,7 @@ const requiredVars = [
   'MONGO_HOST',
   'MONGO_DB_NAME',
   'RABBIT',
+  'FRONTEND_URL',
 ];
 
 const config = {};

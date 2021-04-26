@@ -17,7 +17,8 @@ async function getDatabase() {
   }
   try {
     await client.connect();
-    return client.db(MONGO_DB_NAME);
+    database = client.db(MONGO_DB_NAME);
+    return database;
   } catch (err) {
     connectErr = err;
     throw err;
@@ -28,9 +29,6 @@ async function getVideo(videoId) {
   try {
     const db = await getDatabase();
     const videos = db.collection('videos');
-    const cursor = videos.find();
-    cursor.count().then((d) => console.log('ALL VIDS', d));
-    await cursor.forEach(console.dir);
     const query = { _id: ObjectId(videoId) };
     const video = await videos.findOne(query);
     return video;
@@ -40,4 +38,19 @@ async function getVideo(videoId) {
   }
 }
 
-module.exports = { getVideo };
+async function getVideosList() {
+  try {
+    const db = await getDatabase();
+    const videos = db.collection('videos');
+    const cursor = videos.find();
+    cursor.count().then((d) => console.log('ALL VIDS', d));
+    const list = [];
+    await cursor.forEach((v) => list.push(v));
+    return list;
+  } catch (err) {
+    console.error(`Error while getting video: ${err.message}`);
+    throw err;
+  }
+}
+
+module.exports = { getVideo, getVideosList };

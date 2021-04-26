@@ -17,7 +17,8 @@ async function getDatabase() {
   }
   try {
     await client.connect();
-    return client.db(MONGO_DB_NAME);
+    database = client.db(MONGO_DB_NAME);
+    return database;
   } catch (err) {
     connectErr = err;
     throw err;

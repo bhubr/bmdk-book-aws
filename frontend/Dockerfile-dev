@@ -1,0 +1,6 @@
+FROM node:14-alpine
+WORKDIR /app
+COPY package.json yarn.lock .
+CMD yarn config set cache-min 9999999 && \
+    yarn install && \
+    yarn start

@@ -2,16 +2,21 @@ const express = require('express');
 const http = require('http');
 const morgan = require('morgan');
 const amqp = require('amqplib');
+const cors = require('cors');
 const {
   PORT: port,
   VIDEO_STORAGE_HOST: storageHost,
   VIDEO_STORAGE_PORT: storagePort,
   RABBIT: rabbitUrl,
+  // FRONTEND_URL: frontendUrl,
 } = require('./config');
-const { getVideo } = require('./mongo');
+const { getVideo, getVideosList } = require('./mongo');
 
 const app = express();
 app.use(morgan('tiny'));
+app.use(cors({
+  origin: 'http://localhost:3000', // frontendUrl,
+}));
 
 const q = 'video:viewed';
 let ch;
@@ -21,6 +26,16 @@ async function startPublisher() {
   ch = await conn.createChannel();
   await ch.assertQueue(q);
 }
+
+app.get('/videos', async (req, res) => {
+  try {
+    const videos = await getVideosList();
+    return res.json(videos);
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
 
 app.get('/videos/:id', async (req, res) => {
   try {

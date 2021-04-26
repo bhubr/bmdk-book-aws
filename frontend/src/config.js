@@ -1,0 +1,1 @@
+export const streamingServiceUrl = process.env.REACT_APP_STREAMING_URL;
