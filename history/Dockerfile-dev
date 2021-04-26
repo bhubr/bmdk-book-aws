@@ -1,0 +1,7 @@
+FROM node:14-alpine
+WORKDIR /app
+COPY package*.json .
+RUN npm install --only=production
+CMD npm config set cache-min 9999999 && \
+    npm install && \
+    npm run start:dev

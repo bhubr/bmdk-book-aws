@@ -1,26 +1,37 @@
 const express = require('express');
 const http = require('http');
 const morgan = require('morgan');
+const amqp = require('amqplib');
 const {
   PORT: port,
   VIDEO_STORAGE_HOST: storageHost,
   VIDEO_STORAGE_PORT: storagePort,
+  RABBIT: rabbitUrl,
 } = require('./config');
 const { getVideo } = require('./mongo');
 
 const app = express();
 app.use(morgan('tiny'));
 
+const q = 'video:viewed';
+let ch;
+
+async function startPublisher() {
+  const conn = await amqp.connect(rabbitUrl);
+  ch = await conn.createChannel();
+  await ch.assertQueue(q);
+}
+
 app.get('/videos/:id', async (req, res) => {
   try {
     const videoId = req.params.id;
     const video = await getVideo(videoId);
-    console.log('GOT VIDEO', videoId, video);
     if (video === null || Object.keys(video).length === 0) {
       return res.status(404).json({
         error: `No video with id ${videoId}`,
       });
     }
+    ch.sendToQueue(q, Buffer.from(req.params.id));
     const forwardReq = http.request(
       {
         host: storageHost,
@@ -42,6 +53,13 @@ app.get('/videos/:id', async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Video streaming microservice listening on port ${port}`);
-});
+startPublisher()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Video streaming microservice listening on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error(`Video streaming microservice error on startup ${err.message}`);
+    throw err;
+  });

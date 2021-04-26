@@ -6,9 +6,21 @@ services:
     image: mongo:latest
     container_name: video-db
 
+  rabbit:
+    image: rabbitmq:3.8.5-management
+    container_name: rabbit
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    expose:
+      - "5672"
+      - "15672"
+    restart: always
+
   streaming:
     depends_on:
       - db
+      - rabbit
     image: video-streaming
     build:
       context: ./streaming
@@ -22,6 +34,24 @@ services:
     volumes:
       - ~/.npm:/root/.npm:z
       - ./streaming/src:/app/src:z
+
+  history:
+    depends_on:
+      - db
+      - rabbit
+    image: video-history
+    build:
+      context: ./history
+      dockerfile: Dockerfile-dev
+    container_name: video-history
+    ports:
+      - "4002:80"
+    environment:
+      PORT: 80
+    env_file: ./history/.env
+    volumes:
+      - ~/.npm:/root/.npm:z
+      - ./history/src:/app/src:z
 
   storage:
     image: video-storage
