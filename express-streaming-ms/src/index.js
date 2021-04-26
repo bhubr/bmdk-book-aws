@@ -1,7 +1,6 @@
 const express = require('express');
 const http = require('http');
 const morgan = require('morgan');
-const { ObjectID } = require('mongodb');
 const {
   PORT: port,
   VIDEO_STORAGE_HOST: storageHost,
